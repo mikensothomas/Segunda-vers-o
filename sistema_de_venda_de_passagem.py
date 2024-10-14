@@ -9,10 +9,12 @@ dados_falsos = Faker('pt_BR')
 fila = queue.Queue()
 bloqueio = threading.Lock()
 
-def produtor():
-    while True:
+def produtor(max_execucoes=1):
+    # while True:
+    for execucao in range(max_execucoes):
+        cont = 1
         with bloqueio:
-            for _ in range(1000):
+            for _ in range(20):
                 dados_passagem = {
                     "nome": dados_falsos.name(),
                     "cpf": dados_falsos.cpf(),
@@ -20,23 +22,27 @@ def produtor():
                     "hora": dados_falsos.date_time_this_year().strftime("%d/%m%Y"),
                     "assento": random.randint(1, 100)
                 }
-                print("Demanda gerada: ")
+                print(f"{cont}: Demanda gerada: ")
                 for chave, valor, in dados_passagem.items():
                     print(f"{chave}: {valor}")
                 print("_" * 20)
 
                 json_dados = json.dumps(dados_passagem)
                 fila.put(json_dados)
+                cont += 1
         time.sleep(3)
 
-def consumidor():
-    while True:
+def consumidor(max_execucoes=1):
+    # while True:
+    for execucao in range(max_execucoes):
+        cont = 1
         with bloqueio:
             for _ in range(10):
                 if not fila.empty():
                     dados = fila.get()
                     fila.task_done()
-                    print(f"Demanda consumida: {dados}")
+                    print(f"{cont}: Demanda consumida: {dados}")
+                    cont += 1
         time.sleep(10)
 
 if __name__ == "__main__":
