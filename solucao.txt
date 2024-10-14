@@ -1,0 +1,8 @@
+Uma fila grande para as requisições de entradas
+Uma outra fila grande para as requisições consumidas.
+Uma função para distribuir as requisições para cada fila menor
+    conforme as requisições vão ser consumidas, elas vão ficar nas fila de saída.
+    Vamos dizer que tem 3 filas menores, o tamanha maximum é 5, se tem 15 requições cada fila menor vai ficar com 5.
+    E eles vão liberar uma requisição por vez, sempre tem que tentar separar de forma igual para cada fila, se sobra algumas,
+    esperar liberar aquelas que já estão nas filas menores e vai colocando conforme a liberação.
+Uma thread para cada fila menor.
