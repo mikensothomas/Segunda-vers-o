@@ -12,7 +12,7 @@ bloqueio = threading.Lock()
 def produtor():
     while True:
         with bloqueio:
-            for _ in range(20):
+            for _ in range(1000):
                 dados_passagem = {
                     "nome": dados_falsos.name(),
                     "cpf": dados_falsos.cpf(),
@@ -37,7 +37,7 @@ def consumidor():
                     dados = fila.get()
                     fila.task_done()
                     print(f"Demanda consumida: {dados}")
-        time.sleep(3)
+        time.sleep(10)
 
 if __name__ == "__main__":
     thread_produtor = threading.Thread(target=produtor)
