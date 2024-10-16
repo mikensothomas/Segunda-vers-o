@@ -109,6 +109,7 @@
 #     print("______________________________________________________________________________________________")
 #     demandas_consumidas()
 
+import threading
 import queue
 import random
 import time
@@ -138,7 +139,6 @@ def demandas_recebidas():
         }
         for chave, valor in dados_passagem.items():
             print(f"{chave}: {valor}")
-
         print("\n")
 
         
@@ -146,6 +146,9 @@ def demandas_recebidas():
         fila_entrada.put(json_dados)
         id += 1
     time.sleep(3)
+
+# def distribuir_demandas():
+#     pass
 
 def demandas_consumidas():
     while True:  # Continua processando indefinidamente
@@ -162,7 +165,6 @@ def demandas_consumidas():
                     
                     for chave, valor in dados.items():
                         print(f"{chave}: {valor}")
-                    
                     print("\n")
         else:
             break
@@ -176,3 +178,16 @@ if __name__ == "__main__":
     print("\n")
     print("Fila de saída: ")
     demandas_consumidas()
+
+    # thread_demandas_recebidas =  threading.Thread(target=demandas_recebidas)
+    # thread_demandas_consumidas = threading.Thread(target=demandas_consumidas)
+
+    # print("Fila de entrada: ")
+    # thread_demandas_recebidas.start()
+    # print("============================================================================================================")
+    # print("\n")
+    # print("Fila de saída: ")
+    # thread_demandas_consumidas.start()
+
+    # thread_demandas_recebidas.join()
+    # thread_demandas_consumidas.join()
