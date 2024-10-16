@@ -126,14 +126,14 @@ fila3 = queue.Queue
 fila4 = queue.Queue
 
 def demandas_recebidas():
-    cont = 1
+    id = 1
     for _ in range(3):
         dados_passagem = {
-            "ID": cont,
+            "ID": id,
             "nome": dados_falsos.name(),
             "cpf": dados_falsos.cpf(),
-            "data": dados_falsos.date(),
-            "hora": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+            "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+            "hora": dados_falsos.time(),
             "assento": random.randint(1, 100)
         }
         for chave, valor in dados_passagem.items():
@@ -144,13 +144,10 @@ def demandas_recebidas():
         
         json_dados = json.dumps(dados_passagem)
         fila_entrada.put(json_dados)  # Coloca na fila de entrada
-        cont += 1
+        id += 1
     time.sleep(3)  # Simula intervalo de geração de demandas
 
-import json
-
 def demandas_consumidas():
-    cont = 1
     while True:  # Continua processando indefinidamente
         if not fila_entrada.empty():
             for _ in range(3):  # Consome até 3 demandas por vez
@@ -167,7 +164,6 @@ def demandas_consumidas():
                         print(f"{chave}: {valor}")
                     
                     print("\n")
-                    cont += 1
         else:
             break
         
