@@ -120,51 +120,63 @@ dados_falsos = Faker('pt_BR')
 # Criando as filas
 fila_entrada = queue.Queue()
 fila_saida = queue.Queue()
+fila1 = queue.Queue
+fila2 = queue.Queue
+fila3 = queue.Queue
+fila4 = queue.Queue
 
 def demandas_recebidas():
-    """
-    Gera 200 demandas e as coloca na fila de entrada a cada 3 segundos.
-    """
     cont = 1
-    for _ in range(200):
+    for _ in range(3):
         dados_passagem = {
+            "ID": cont,
             "nome": dados_falsos.name(),
             "cpf": dados_falsos.cpf(),
             "data": dados_falsos.date(),
             "hora": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
             "assento": random.randint(1, 100)
         }
-        print(f"{cont}: Demandas geradas: {dados_passagem}")
+        for chave, valor in dados_passagem.items():
+            print(f"{chave}: {valor}")
+
+        print("\n")  # Linha separadora após os dados
+
         
         json_dados = json.dumps(dados_passagem)
         fila_entrada.put(json_dados)  # Coloca na fila de entrada
         cont += 1
     time.sleep(3)  # Simula intervalo de geração de demandas
 
+import json
+
 def demandas_consumidas():
-    """
-    Processa no máximo 3 demandas a cada 10 segundos e coloca na fila de saída.
-    """
     cont = 1
     while True:  # Continua processando indefinidamente
         if not fila_entrada.empty():
             for _ in range(3):  # Consome até 3 demandas por vez
                 if not fila_entrada.empty():
-                    dados = fila_entrada.get()
+                    dados = fila_entrada.get()  # Obtém os dados da fila
                     fila_entrada.task_done()
                     
-                    fila_saida.put(dados)  # Move para a fila de saída
-                    print(f"{cont}: Demandas consumidas: {dados}")
+                    # Converte a string JSON para dicionário
+                    dados = json.loads(dados)  # Converte de JSON string para dicionário
+                    
+                    fila_saida.put(dados)
+                    
+                    for chave, valor in dados.items():
+                        print(f"{chave}: {valor}")
+                    
+                    print("\n")
                     cont += 1
         else:
-            print("Nenhuma demanda para consumir no momento.")
+            break
         
-        time.sleep(10)  # Intervalo de 10 segundos entre os ciclos de consumo
+        time.sleep(10)
 
 if __name__ == "__main__":
-    # Executa o produtor e consumidor em sequência
+    print("Fila de entrada: ")
     demandas_recebidas()
     print("============================================================================================================")
-    print("============================================================================================================")
-    # O consumidor processa as demandas
+    print("\n")
+    print("Fila de saída: ")
     demandas_consumidas()
