@@ -139,13 +139,13 @@ def demandas_recebidas():
         for chave, valor in dados_passagem.items():
             print(f"{chave}: {valor}")
 
-        print("\n")  # Linha separadora após os dados
+        print("\n")
 
         
         json_dados = json.dumps(dados_passagem)
-        fila_entrada.put(json_dados)  # Coloca na fila de entrada
+        fila_entrada.put(json_dados)
         id += 1
-    time.sleep(3)  # Simula intervalo de geração de demandas
+    time.sleep(3)
 
 def demandas_consumidas():
     while True:  # Continua processando indefinidamente
