@@ -121,31 +121,33 @@ dados_falsos = Faker('pt_BR')
 # Criando as filas
 fila_entrada = queue.Queue()
 fila_saida = queue.Queue()
-fila1 = queue.Queue
-fila2 = queue.Queue
-fila3 = queue.Queue
-fila4 = queue.Queue
+# fila1 = queue.Queue
+# fila2 = queue.Queue
+# fila3 = queue.Queue
+# fila4 = queue.Queue
 
 def demandas_recebidas():
     id = 1
-    for _ in range(3):
-        dados_passagem = {
-            "ID": id,
-            "nome": dados_falsos.name(),
-            "cpf": dados_falsos.cpf(),
-            "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
-            "hora": dados_falsos.time(),
-            "assento": random.randint(1, 100)
-        }
-        for chave, valor in dados_passagem.items():
-            print(f"{chave}: {valor}")
-        print("\n")
+    while True:
+        for _ in range(3):
+            dados_passagem = {
+                "ID": id,
+                "nome": dados_falsos.name(),
+                "cpf": dados_falsos.cpf(),
+                "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+                "hora": dados_falsos.time(),
+                "assento": random.randint(1, 100)
+            }
+            print(f"{dados_passagem['nome']} está na fila de entrada")
+            for chave, valor in dados_passagem.items():
+                print(f"{chave}: {valor}")
+            print("\n")
 
-        
-        json_dados = json.dumps(dados_passagem)
-        fila_entrada.put(json_dados)
-        id += 1
-    time.sleep(3)
+            
+            json_dados = json.dumps(dados_passagem)
+            fila_entrada.put(json_dados)
+            id += 1
+        time.sleep(3)
 
 # def distribuir_demandas():
 #     pass
@@ -162,32 +164,33 @@ def demandas_consumidas():
                     dados = json.loads(dados)  # Converte de JSON string para dicionário
                     
                     fila_saida.put(dados)
-                    
+                    print(f"{dados['nome']} está na lista de saída")
                     for chave, valor in dados.items():
                         print(f"{chave}: {valor}")
                     print("\n")
-        else:
-            break
+        # else:
+        #     break
+            # print("Nenhuma demanda para consumir")
         
         time.sleep(10)
 
 if __name__ == "__main__":
-    print("Fila de entrada: ")
-    demandas_recebidas()
-    print("============================================================================================================")
-    print("\n")
-    print("Fila de saída: ")
-    demandas_consumidas()
-
-    # thread_demandas_recebidas =  threading.Thread(target=demandas_recebidas)
-    # thread_demandas_consumidas = threading.Thread(target=demandas_consumidas)
-
     # print("Fila de entrada: ")
-    # thread_demandas_recebidas.start()
+    # demandas_recebidas()
     # print("============================================================================================================")
     # print("\n")
     # print("Fila de saída: ")
-    # thread_demandas_consumidas.start()
+    # demandas_consumidas()
 
-    # thread_demandas_recebidas.join()
-    # thread_demandas_consumidas.join()
+    thread_demandas_recebidas =  threading.Thread(target=demandas_recebidas)
+    thread_demandas_consumidas = threading.Thread(target=demandas_consumidas)
+
+    # print("Fila de entrada: ")
+    thread_demandas_recebidas.start()
+    # print("============================================================================================================")
+    # print("\n")
+    # print("Fila de saída: ")
+    thread_demandas_consumidas.start()
+
+    thread_demandas_recebidas.join()
+    thread_demandas_consumidas.join()
