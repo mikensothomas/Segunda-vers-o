@@ -1,114 +1,3 @@
-# import threading
-# import queue
-# import random
-# import time
-# import json
-# from faker import Faker
-
-# dados_falsos = Faker('pt_BR')
-# fila = queue.Queue()
-# bloqueio = threading.Lock()
-
-# def fila_de_entrada(max_execucoes=1):
-#     # while True:
-#     for execucao in range(max_execucoes):
-#         cont = 1
-#         with bloqueio:
-#             for _ in range(20):
-#                 dados_passagem = {
-#                     "nome": dados_falsos.name(),
-#                     "cpf": dados_falsos.cpf(),
-#                     "data": dados_falsos.date(),
-#                     "hora": dados_falsos.date_time_this_year().strftime("%d/%m%Y"),
-#                     "assento": random.randint(1, 100)
-#                 }
-#                 print(f"{cont}: Demanda gerada: ")
-#                 for chave, valor, in dados_passagem.items():
-#                     print(f"{chave}: {valor}")
-#                 print("_" * 20)
-
-#                 json_dados = json.dumps(dados_passagem)
-#                 fila.put(json_dados)
-#                 cont += 1
-#         time.sleep(3)
-
-# def fila_de_saida(max_execucoes=1):
-#     # while True:
-#     for execucao in range(max_execucoes):
-#         cont = 1
-#         with bloqueio:
-#             for _ in range(10):
-#                 if not fila.empty():
-#                     dados = fila.get()
-#                     fila.task_done()
-#                     print(f"{cont}: Demanda consumida: {dados}")
-#                     cont += 1
-#         time.sleep(10)
-
-# if __name__ == "__main__":
-#     thread_produtor = threading.Thread(target=fila_de_entrada)
-#     thread_consumidor = threading.Thread(target=fila_de_saida)
-
-#     thread_produtor.start()
-#     thread_consumidor.start()
-
-#     thread_produtor.join()
-#     thread_consumidor.join()
-
-# import threading
-# import queue
-# import random
-# import time
-# import json
-# from faker import Faker
-
-# dados_falsos = Faker('pt_BR')
-
-# # Criando as filas
-# fila_entrada = queue.Queue()
-# fila_saida = queue.Queue()
-# fila1 = queue.Queue
-# fila2 = queue.Queue
-# fila3 = queue.Queue
-# fila4 = queue.Queue
-
-# def demandas_recebidas():
-
-#     cont = 1
-#     for _ in range(200):
-#         dados_passagem = {
-#             "nome": dados_falsos.name(),
-#             "cpf": dados_falsos.cpf(),
-#             "data": dados_falsos.date(),
-#             "hora": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
-#             "assento": random.randint(1, 100)
-#         }
-#         print(f"{cont}: Demandas geradas: {dados_passagem}")
-        
-#         json_dados = json.dumps(dados_passagem)
-#         fila_entrada.put(json_dados)
-#         cont += 1
-#     time.sleep(3)
-
-# def demandas_consumidas():
-
-#     cont = 1
-#     for _ in range(3):
-#         while not fila_entrada.empty():
-#             dados = fila_entrada.get()
-#             fila_entrada.task_done()
-            
-#             fila_saida.put(dados)
-#             print(f"{cont}: Demandas consumidas: {dados}")
-#             cont += 1
-#     time.sleep(10)
-
-# if __name__ == "__main__":
-#     demandas_recebidas()
-#     print("´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´")
-#     print("______________________________________________________________________________________________")
-#     demandas_consumidas()
-
 import threading
 import queue
 import random
@@ -120,76 +9,106 @@ dados_falsos = Faker('pt_BR')
 
 fila_entrada = queue.Queue()
 fila_saida = queue.Queue()
-fila1 = queue.Queue
-fila2 = queue.Queue
-fila3 = queue.Queue
-fila4 = queue.Queue
+fila1 = queue.Queue(maxsize=20)
+fila2 = queue.Queue(maxsize=20)
+fila3 = queue.Queue(maxsize=20)
+fila4 = queue.Queue(maxsize=20)
+
+lock = threading.Lock()
 
 def demandas_recebidas():
     id = 1
-    while True:
-        for _ in range(3):
-            dados_passagem = {
-                "ID": id,
-                "nome": dados_falsos.name(),
-                "cpf": dados_falsos.cpf(),
-                "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
-                "hora": dados_falsos.time(),
-                "assento": random.randint(1, 100)
-            }
-            print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa da fila de entrada")
-            for chave, valor in dados_passagem.items():
-                print(f"{chave}: {valor}")
-            print("\n")
+    for _ in range(4):
+        dados_passagem = {
+            "ID": id,
+            "nome": dados_falsos.name(),
+            "cpf": dados_falsos.cpf(),
+            "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+            "hora": dados_falsos.time(),
+            "assento": random.randint(1, 100)
+        }
 
-            
-            json_dados = json.dumps(dados_passagem)
-            fila_entrada.put(json_dados)
-            id += 1
-        time.sleep(3)
-
-# def distribuir_demandas():
-#     pass
-
-def demandas_consumidas():
-    while True:  # Continua processando indefinidamente
-        if not fila_entrada.empty():
-            for _ in range(3):  # Consome até 3 demandas por vez
-                if not fila_entrada.empty():
-                    dados = fila_entrada.get()  # Obtém os dados da fila
-                    fila_entrada.task_done()
-                    
-                    # Converte a string JSON para dicionário
-                    dados = json.loads(dados)  # Converte de JSON string para dicionário
-                    
-                    fila_saida.put(dados)
-                    print(f"{dados['nome']} é a {dados['ID']}a pessoa da lista de saída")
-                    for chave, valor in dados.items():
-                        print(f"{chave}: {valor}")
-                    print("\n")
-        # else:
-        #     break
-            # print("Nenhuma demanda para consumir")
+        json_dados = json.dumps(dados_passagem)
         
-        time.sleep(10)
+        with lock:
+            fila_entrada.put(json_dados)
+        
+        print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa na fila de entrada.")
+        for chave, valor in dados_passagem.items():
+            print(f"{chave}: {valor}")
+        print("\n")
+        id += 1
+    
+    time.sleep(3)
+
+def distribuir_demandas():
+    filas = [fila1, fila2, fila3, fila4]
+    idx = 0
+    while True:
+        if not fila_entrada.empty():
+            with lock:
+                dados = fila_entrada.get()
+                fila_entrada.task_done()
+
+            dados = json.loads(dados)
+
+            with lock:
+                if filas[idx].qsize() < 20:
+                    filas[idx].put(dados)
+                    print(f"{dados['nome']} com ID {dados['ID']} está na fila {idx + 1}")
+            idx = (idx + 1) % 4
+
+        time.sleep(1)
+
+def liberar_fila(fila, nome_fila):
+    while True:
+        with lock:
+            if not fila.empty():
+                dados = fila.get()
+                fila.task_done()
+                
+                fila_saida.put(json.dumps(dados))
+                print(f"Demanda ID {dados['ID']} liberada da {nome_fila}.")
+        
+        time.sleep(3) 
+
+def consumir_fila_saida():
+    while True:
+        if not fila_saida.empty():
+            with lock:
+                dados = fila_saida.get() 
+                fila_saida.task_done()
+                
+                dados = json.loads(dados)
+        
+        time.sleep(5) 
 
 if __name__ == "__main__":
-    # print("Fila de entrada: ")
-    # demandas_recebidas()
-    # print("============================================================================================================")
-    # print("\n")
-    # print("Fila de saída: ")
-    # demandas_consumidas()
 
-    thread_demandas_recebidas =  threading.Thread(target=demandas_recebidas)
-    thread_demandas_consumidas = threading.Thread(target=demandas_consumidas)
+    thread_receber_demandas = threading.Thread(target=demandas_recebidas)
+    thread_distribuir_demandas = threading.Thread(target=distribuir_demandas)
+    
+    thread_liberar_fila1 = threading.Thread(target=liberar_fila, args=(fila1, "fila1"))
+    thread_liberar_fila2 = threading.Thread(target=liberar_fila, args=(fila2, "fila2"))
+    thread_liberar_fila3 = threading.Thread(target=liberar_fila, args=(fila3, "fila3"))
+    thread_liberar_fila4 = threading.Thread(target=liberar_fila, args=(fila4, "fila4"))
+    
+    thread_consumir_fila_saida = threading.Thread(target=consumir_fila_saida)
 
-    # print("Fila de entrada: ")
-    thread_demandas_recebidas.start()
-    # print("============================================================================================================")
-    # print("\n")
-    # print("Fila de saída: ")
-    thread_demandas_consumidas.start()
+    thread_receber_demandas.start()
+    thread_distribuir_demandas.start()
+    
+    thread_liberar_fila1.start()
+    thread_liberar_fila2.start()
+    thread_liberar_fila3.start()
+    thread_liberar_fila4.start()
+    
+    thread_consumir_fila_saida.start()
 
-    thread_demandas_recebidas.join()
-    thread_demandas_consumidas.join()
+    thread_receber_demandas.join()
+    thread_distribuir_demandas.join()
+    thread_liberar_fila1.join()
+    thread_liberar_fila2.join()
+    thread_liberar_fila3.join()
+    thread_liberar_fila4.join()
+    thread_consumir_fila_saida.join()
