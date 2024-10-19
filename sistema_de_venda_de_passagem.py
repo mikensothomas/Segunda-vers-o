@@ -118,13 +118,12 @@ from faker import Faker
 
 dados_falsos = Faker('pt_BR')
 
-# Criando as filas
 fila_entrada = queue.Queue()
 fila_saida = queue.Queue()
-# fila1 = queue.Queue
-# fila2 = queue.Queue
-# fila3 = queue.Queue
-# fila4 = queue.Queue
+fila1 = queue.Queue
+fila2 = queue.Queue
+fila3 = queue.Queue
+fila4 = queue.Queue
 
 def demandas_recebidas():
     id = 1
