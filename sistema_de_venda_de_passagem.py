@@ -138,7 +138,7 @@ def demandas_recebidas():
                 "hora": dados_falsos.time(),
                 "assento": random.randint(1, 100)
             }
-            print(f"{dados_passagem['nome']} está na fila de entrada")
+            print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa da fila de entrada")
             for chave, valor in dados_passagem.items():
                 print(f"{chave}: {valor}")
             print("\n")
@@ -164,7 +164,7 @@ def demandas_consumidas():
                     dados = json.loads(dados)  # Converte de JSON string para dicionário
                     
                     fila_saida.put(dados)
-                    print(f"{dados['nome']} está na lista de saída")
+                    print(f"{dados['nome']} é a {dados['ID']}a pessoa da lista de saída")
                     for chave, valor in dados.items():
                         print(f"{chave}: {valor}")
                     print("\n")
