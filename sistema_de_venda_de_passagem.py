@@ -176,7 +176,7 @@ def distribuir_demandas():
                     print(f"{dados['nome']} com ID {dados['ID']} foi colocada na fila {idx + 1}")
             idx = (idx + 1) % 4  # Alterna entre as filas 1, 2, 3 e 4
 
-        time.sleep(1)
+        time.sleep(2)
 
 def liberar_fila(fila, nome_fila):
     while True:
@@ -186,9 +186,9 @@ def liberar_fila(fila, nome_fila):
                 fila.task_done()
                 
                 fila_saida.put(json.dumps(dados))  # Manda a demanda para a fila de saída
-                # print(f"Demanda ID {dados['ID']} foi atendida da {nome_fila} e foi para a fila de saída.")
+                print(f"Demanda ID {dados['ID']} foi atendida na {nome_fila}.")
         
-        time.sleep(3)  # Simula liberar uma demanda por vez a cada 3 segundos
+        time.sleep(6)  # Simula liberar uma demanda por vez a cada 3 segundos
 
 # def consumir_fila_saida():
 #     while True:
@@ -220,7 +220,7 @@ def consumir_fila_saida():
                 print(f"Demanda com ID {demanda['ID']} está na fila de saída")  # Imprime cada demanda
             saida.clear()  # Limpa a lista após imprimir
 
-        time.sleep(5)  # Espera antes de continuar
+        time.sleep(6)  # Espera antes de continuar
 
 if __name__ == "__main__":
     # Criando as threads para cada fila
