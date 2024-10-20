@@ -17,30 +17,30 @@ fila4 = queue.Queue(maxsize=20)
 lock = threading.Lock()
 
 def demandas_recebidas():
-    while True:
-        id = 1
-        for _ in range(5):
-            dados_passagem = {
-                "ID": id,
-                "nome": dados_falsos.name(),
-                "cpf": dados_falsos.cpf(),
-                "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
-                "hora": dados_falsos.time(),
-                "assento": random.randint(1, 100)
-            }
+    # while True:
+    id = 1
+    for _ in range(20):
+        dados_passagem = {
+            "ID": id,
+            "nome": dados_falsos.name(),
+            "cpf": dados_falsos.cpf(),
+            "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+            "hora": dados_falsos.time(),
+            "assento": random.randint(1, 100)
+        }
 
-            json_dados = json.dumps(dados_passagem)
-            
-            with lock:
-                fila_entrada.put(json_dados)
-            
-            print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa na fila de entrada.")
-            for chave, valor in dados_passagem.items():
-                print(f"{chave}: {valor}")
-            print("\n")
-            id += 1
+        json_dados = json.dumps(dados_passagem)
+        
+        with lock:
+            fila_entrada.put(json_dados)
+        
+        print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa na fila de entrada.")
+        for chave, valor in dados_passagem.items():
+            print(f"{chave}: {valor}")
+        print("\n")
+        id += 1
 
-        time.sleep(3)
+    time.sleep(3)
 
 def distribuir_demandas():
     filas = [fila1, fila2, fila3, fila4]
