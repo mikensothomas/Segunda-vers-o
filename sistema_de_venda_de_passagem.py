@@ -70,9 +70,6 @@ def liberar_fila(fila, nome_fila):
                 
                 fila_saida.put(json.dumps(dados))
                 print(f"Demanda com ID {dados['ID']} foi liberada da {nome_fila} e colocada na fila de saída.")
-                
-                # tamanho_fila_saida = fila_saida.qsize()
-                # print(f"Fila de saída: {tamanho_fila_saida}")
         
         time.sleep(5)
 
