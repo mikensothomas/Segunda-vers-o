@@ -68,8 +68,7 @@ def liberar_fila(fila, nome_fila):
                 fila.task_done()
                 
                 fila_saida.put(json.dumps(dados))
-                print(f"Demanda com ID {dados['ID']} foi liberada da {nome_fila} e colocada na fila de saída.")
-        
+                print(f"Demanda com ID {dados['ID']} foi liberada da {nome_fila} e colocada na fila de saída.")      
         time.sleep(5)
 
 if __name__ == "__main__":
