@@ -18,7 +18,7 @@ lock = threading.Lock()
 
 def demandas_recebidas():
     id = 1
-    for _ in range(50000):
+    for _ in range(50):
         dados_passagem = {
             "ID": id,
             "nome": dados_falsos.name(),
@@ -29,16 +29,14 @@ def demandas_recebidas():
         }
 
         json_dados = json.dumps(dados_passagem)
-
+        
         with lock:
             fila_entrada.put(json_dados)
-
-        with lock:
-            print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa na fila de entrada.")
-            for chave, valor in dados_passagem.items():
-                print(f"{chave}: {valor}")
-            print("\n")
         
+        print(f"{dados_passagem['nome']} é a {dados_passagem['ID']}a pessoa na fila de entrada.")
+        for chave, valor in dados_passagem.items():
+            print(f"{chave}: {valor}")
+        print("\n")
         id += 1
 
     time.sleep(3)
@@ -73,7 +71,6 @@ def liberar_fila(fila, nome_fila):
                 print(f"Demanda com ID {dados['ID']} foi liberada da {nome_fila} e colocada na fila de saída.")
         
         time.sleep(5)
-
 
 if __name__ == "__main__":
     thread_receber_demandas = threading.Thread(target=demandas_recebidas)
