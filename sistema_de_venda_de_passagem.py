@@ -4,6 +4,7 @@ import random
 import time
 import json
 from faker import Faker
+from datetime import date, timedelta
 
 dados_falsos = Faker('pt_BR')
 
@@ -16,14 +17,21 @@ fila4 = queue.Queue(maxsize=20)
 
 lock = threading.Lock()
 
+def gerar_data():
+  data_atual = date.today()
+  dias_aleatorios = random.randrange(365)
+  data_em_texto = data_atual + timedelta(days=dias_aleatorios)
+  data_em_texto = data_em_texto.strftime("%d/%m/%Y")
+  return data_em_texto
+
 def demandas_recebidas():
     id = 1
-    for _ in range(50):
+    for _ in range(2):
         dados_passagem = {
             "ID": id,
             "nome": dados_falsos.name(),
             "cpf": dados_falsos.cpf(),
-            "data": dados_falsos.date_time_this_year().strftime("%d/%m/%Y"),
+            "data": gerar_data(),
             "hora": dados_falsos.time(),
             "assento": random.randint(1, 100)
         }
