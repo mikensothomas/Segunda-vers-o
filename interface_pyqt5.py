@@ -14,7 +14,7 @@ dados_falsos = Faker('pt_BR')
 # Filas para simulação
 fila_entrada = queue.Queue()
 fila_saida = queue.Queue()
-filas_processamento = [queue.Queue(maxsize=10) for _ in range(4)]
+filas_processamento = [queue.Queue(maxsize=3) for _ in range(4)]
 # Contadores de demandas em cada fila de processamento
 contadores_filas = [0] * 4
 
