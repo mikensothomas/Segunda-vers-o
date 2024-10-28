@@ -2,7 +2,6 @@ import sys
 import threading
 import queue
 import random
-import json
 import time
 from faker import Faker
 from datetime import date, timedelta
@@ -34,7 +33,6 @@ def gerar_dados_passagem(id):
 # Funções de processamento paralelo
 def demandas_recebidas():
     id = 1
-    # while True:
     for _ in range(20):
         dados_passagem = gerar_dados_passagem(id)
         fila_entrada.put(dados_passagem)
@@ -71,8 +69,8 @@ class PassagensUI(QMainWindow):
 
         # Configuração da tabela de entrada com scroll vertical
         self.tabela_entrada = QTableWidget()
-        self.tabela_entrada.setColumnCount(3)
-        self.tabela_entrada.setHorizontalHeaderLabels(["ID", "Nome", "CPF"])
+        self.tabela_entrada.setColumnCount(6)  # Alterado para 6 colunas
+        self.tabela_entrada.setHorizontalHeaderLabels(["ID", "Nome", "CPF", "Data", "Hora", "Assento"])  # Ajustado para incluir colunas adicionais
         self.tabela_entrada.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         entrada_scroll = QScrollArea()
@@ -94,8 +92,8 @@ class PassagensUI(QMainWindow):
 
         # Configuração da tabela de saída com scroll vertical
         self.tabela_saida = QTableWidget()
-        self.tabela_saida.setColumnCount(3)
-        self.tabela_saida.setHorizontalHeaderLabels(["ID", "Nome", "CPF"])
+        self.tabela_saida.setColumnCount(6)  # Alterado para 6 colunas
+        self.tabela_saida.setHorizontalHeaderLabels(["ID", "Nome", "CPF", "Data", "Hora", "Assento"])  # Ajustado para incluir colunas adicionais
         self.tabela_saida.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         
         saida_scroll = QScrollArea()
@@ -122,6 +120,9 @@ class PassagensUI(QMainWindow):
             self.tabela_entrada.setItem(i, 0, QTableWidgetItem(str(item["ID"])))
             self.tabela_entrada.setItem(i, 1, QTableWidgetItem(item["nome"]))
             self.tabela_entrada.setItem(i, 2, QTableWidgetItem(item["cpf"]))
+            self.tabela_entrada.setItem(i, 3, QTableWidgetItem(item["data"]))
+            self.tabela_entrada.setItem(i, 4, QTableWidgetItem(item["hora"]))
+            self.tabela_entrada.setItem(i, 5, QTableWidgetItem(str(item["assento"])))
 
         # Atualizar as barras de progresso das filas de processamento
         for i, fila in enumerate(filas_processamento):
@@ -133,6 +134,9 @@ class PassagensUI(QMainWindow):
             self.tabela_saida.setItem(i, 0, QTableWidgetItem(str(item["ID"])))
             self.tabela_saida.setItem(i, 1, QTableWidgetItem(item["nome"]))
             self.tabela_saida.setItem(i, 2, QTableWidgetItem(item["cpf"]))
+            self.tabela_saida.setItem(i, 3, QTableWidgetItem(item["data"]))
+            self.tabela_saida.setItem(i, 4, QTableWidgetItem(item["hora"]))
+            self.tabela_saida.setItem(i, 5, QTableWidgetItem(str(item["assento"])))
 
 # Função principal
 if __name__ == "__main__":
