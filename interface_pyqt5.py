@@ -33,11 +33,11 @@ def gerar_dados_passagem(id):
 # Funções de processamento paralelo
 def demandas_recebidas():
     id = 1
-    for _ in range(20):
+    for _ in range(40):
         dados_passagem = gerar_dados_passagem(id)
         fila_entrada.put(dados_passagem)
         id += 1
-        time.sleep(1)  # Intervalo reduzido para garantir atualizações frequentes
+        time.sleep(0.01)  # Intervalo reduzido para garantir atualizações frequentes
 
 def distribuir_demandas():
     idx = 0
@@ -47,7 +47,7 @@ def distribuir_demandas():
             fila_entrada.task_done()
             filas_processamento[idx].put(dados)
             idx = (idx + 1) % 4
-        time.sleep(3)
+        time.sleep(1)
 
 def liberar_fila(fila, fila_saida):
     while True:
@@ -55,7 +55,7 @@ def liberar_fila(fila, fila_saida):
             dados = fila.get()
             fila.task_done()
             fila_saida.put(dados)
-        time.sleep(5)
+        time.sleep(10)
 
 # Interface Gráfica em PyQt5
 class PassagensUI(QMainWindow):
