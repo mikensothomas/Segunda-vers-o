@@ -6,7 +6,7 @@ import json
 import time
 from faker import Faker
 from datetime import date, timedelta
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QProgressBar, QWidget, QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QLabel, QProgressBar, QWidget, QTableWidget, QTableWidgetItem, QHeaderView, QScrollArea
 from PyQt5.QtCore import QTimer
 
 # Dados falsos para simulação
@@ -34,11 +34,12 @@ def gerar_dados_passagem(id):
 # Funções de processamento paralelo
 def demandas_recebidas():
     id = 1
-    while True:
+    # while True:
+    for _ in range(20):
         dados_passagem = gerar_dados_passagem(id)
         fila_entrada.put(dados_passagem)
         id += 1
-        time.sleep(3)
+        time.sleep(1)  # Intervalo reduzido para garantir atualizações frequentes
 
 def distribuir_demandas():
     idx = 0
@@ -48,7 +49,7 @@ def distribuir_demandas():
             fila_entrada.task_done()
             filas_processamento[idx].put(dados)
             idx = (idx + 1) % 4
-        time.sleep(1)
+        time.sleep(3)
 
 def liberar_fila(fila, fila_saida):
     while True:
@@ -56,7 +57,7 @@ def liberar_fila(fila, fila_saida):
             dados = fila.get()
             fila.task_done()
             fila_saida.put(dados)
-        time.sleep(2)
+        time.sleep(5)
 
 # Interface Gráfica em PyQt5
 class PassagensUI(QMainWindow):
@@ -68,13 +69,18 @@ class PassagensUI(QMainWindow):
         # Layout principal
         main_layout = QVBoxLayout()
 
-        # Configuração da tabela de entrada
+        # Configuração da tabela de entrada com scroll vertical
         self.tabela_entrada = QTableWidget()
         self.tabela_entrada.setColumnCount(3)
         self.tabela_entrada.setHorizontalHeaderLabels(["ID", "Nome", "CPF"])
         self.tabela_entrada.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        entrada_scroll = QScrollArea()
+        entrada_scroll.setWidget(self.tabela_entrada)
+        entrada_scroll.setWidgetResizable(True)
+        entrada_scroll.setFixedHeight(150)  # Altura fixa para exibir apenas parte da tabela e permitir scroll
         main_layout.addWidget(QLabel("Fila de Entrada"))
-        main_layout.addWidget(self.tabela_entrada)
+        main_layout.addWidget(entrada_scroll)
 
         # Barras de progresso das filas de processamento
         self.barras_filas = []
@@ -86,13 +92,18 @@ class PassagensUI(QMainWindow):
             main_layout.addWidget(barra)
             self.barras_filas.append(barra)
 
-        # Configuração da tabela de saída
+        # Configuração da tabela de saída com scroll vertical
         self.tabela_saida = QTableWidget()
         self.tabela_saida.setColumnCount(3)
         self.tabela_saida.setHorizontalHeaderLabels(["ID", "Nome", "CPF"])
         self.tabela_saida.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        
+        saida_scroll = QScrollArea()
+        saida_scroll.setWidget(self.tabela_saida)
+        saida_scroll.setWidgetResizable(True)
+        saida_scroll.setFixedHeight(150)
         main_layout.addWidget(QLabel("Fila de Saída"))
-        main_layout.addWidget(self.tabela_saida)
+        main_layout.addWidget(saida_scroll)
 
         # Timer para atualização da interface
         self.timer = QTimer()
