@@ -65,7 +65,7 @@ def liberar_fila(fila, fila_saida, index):
 class PassagensUI(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Simulação de Compra de Passagens Aéreas")
+        self.setWindowTitle("Simulação de Compra e pesquisa de Passagens Aéreas")
         self.setGeometry(100, 100, 800, 600)
         
         # Layout principal
